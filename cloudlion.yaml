@@ -310,7 +310,7 @@ proxy-groups:
     interval: 120
     tolerance: 50
     lazy: true
-    filter: "(?i)(日|🇯🇵|东京|大阪|jp|japan)"
+    filter: "(?i)(日本|🇯🇵|东京|大阪|jp|japan)"
   - name: KR 韩国
     icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Korea.png
     type: url-test
