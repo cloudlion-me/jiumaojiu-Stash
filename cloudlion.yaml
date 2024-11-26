@@ -12,7 +12,7 @@ proxy-providers:
     interval: 600
     url: http://sub.store/download/Provider-4?target=Stash
 
-mode: rule
+mode: rule # 使用规则模式
 
 dns:
   enable: true
@@ -49,7 +49,7 @@ proxy-groups:
       - 其它地区
       - 全部节点
 
-  # 功能分组
+  # 分组：国内流量专用
   - name: 国内网站
     icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/StreamingCN.png
     type: select
@@ -58,11 +58,8 @@ proxy-groups:
       - 默认节点
       - HK 香港
       - TW 台湾
-      - JP 日本
-      - KR 韩国
-      - US 美国
-      - SG 新加坡
 
+  # 分组：未分类的外网走代理
   - name: 其他外网
     icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Streaming!CN.png
     type: select
@@ -76,7 +73,7 @@ proxy-groups:
       - SG 新加坡
       - 直连
 
-  # 地区分组
+  # 地区分组（示例）
   - name: HK 香港
     icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Hong_Kong.png
     type: url-test
@@ -84,7 +81,7 @@ proxy-groups:
     interval: 120
     tolerance: 50
     lazy: true
-    filter: "(?i)(澳门|🇲🇴|港|🇭🇰|hk|hong)"
+    filter: "(?i)(港|🇭🇰|hk|hong)"
   - name: TW 台湾
     icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png
     type: url-test
@@ -92,7 +89,7 @@ proxy-groups:
     interval: 120
     tolerance: 50
     lazy: true
-    filter: "(?i)(台|🇹🇼|湾|tw|taiwan)"
+    filter: "(?i)(台|🇹🇼|tw|taiwan)"
   - name: JP 日本
     icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Japan.png
     type: url-test
@@ -100,7 +97,7 @@ proxy-groups:
     interval: 120
     tolerance: 50
     lazy: true
-    filter: "(?i)(日|🇯🇵|东京|大阪|jp|japan)"
+    filter: "(?i)(日|🇯🇵|jp|japan)"
   - name: KR 韩国
     icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Korea.png
     type: url-test
@@ -117,25 +114,6 @@ proxy-groups:
     tolerance: 50
     lazy: true
     filter: "(?i)(美|🇺🇲|us|states|america)"
-  - name: SG 新加坡
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Singapore.png
-    type: url-test
-    include-all: true
-    interval: 120
-    tolerance: 50
-    lazy: true
-    filter: "(?i)(新加坡|坡|狮城|🇸🇬|sg|singapore)"
-  - name: 自动选择
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Auto.png
-    type: url-test
-    include-all: true
-    interval: 120
-    tolerance: 50
-    lazy: true
-  - name: 全部节点
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Global.png
-    type: select
-    include-all: true
 
 rules:
   # 阻止 QUIC 协议
@@ -145,23 +123,53 @@ rules:
   - RULE-SET,category-ai-chat-!cn,默认节点
   - RULE-SET,telegram,默认节点
   - RULE-SET,biliintl,默认节点
-  - RULE-SET,bahamut,默认节点
   - RULE-SET,youtube,默认节点
   - RULE-SET,netflix,默认节点
   - RULE-SET,spotify,默认节点
   - RULE-SET,disney,默认节点
   - RULE-SET,tiktok,默认节点
-  - RULE-SET,steam@cn,国内网站
-  - RULE-SET,steam,默认节点
-  - RULE-SET,pixiv,默认节点
-  - RULE-SET,google-cn,国内网站
-  - RULE-SET,apple-cn,国内网站
-  - RULE-SET,microsoft@cn,国内网站
-  - RULE-SET,microsoft,默认节点
 
   # 按地理位置优先匹配
-  - GEOIP,LAN,直连,no-resolve        # 局域网地址
-  - GEOIP,CN,国内网站,no-resolve    # 中国 IP 地址
+  - GEOIP,LAN,直连,no-resolve        # 局域网地址直连
+  - GEOIP,CN,国内网站,no-resolve    # 中国 IP 地址直连
 
   # 最后兜底规则
-  - MATCH,其他外网                  # 未匹配到规则时使用默认代理
+  - MATCH,其他外网                  # 未匹配到规则时使用代理
+
+rule-providers:
+  category-ai-chat-!cn:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: text
+    url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ai-chat-!cn.list
+  telegram:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: text
+    url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/telegram.list
+  biliintl:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: text
+    url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/biliintl.list
+  youtube:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: text
+    url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/youtube.list
+  netflix:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: text
+    url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/netflix.list
+  spotify:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: text
+    url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/spotify.list
