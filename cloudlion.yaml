@@ -360,7 +360,8 @@ proxy-groups:
     type: select
     include-all: true
 rules:
-  - SCRIPT,quic,REJECT
+  - GEOIP,LAN,直连,no-resolve        
+  - GEOIP,CN,国内网站,no-resolve    
   - RULE-SET,category-ai-chat-!cn,OpenAI
   - RULE-SET,telegram,Telegram
   - RULE-SET,biliintl,哔哩东南亚
@@ -377,9 +378,7 @@ rules:
   - RULE-SET,apple-cn,Apple
   - RULE-SET,microsoft@cn,国内网站
   - RULE-SET,microsoft,Microsoft
-  - GEOIP,LAN,直连,no-resolve        
-  - GEOIP,CN,国内网站,no-resolve    
-  - MATCH,其他外网                 
+  - MATCH,其他外网                                 
 rule-providers:
   category-ai-chat-!cn:
     type: http
